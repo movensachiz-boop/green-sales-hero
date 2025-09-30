@@ -10,7 +10,9 @@ const Index = () => {
       <section className="relative overflow-hidden bg-gradient-to-br from-primary to-accent py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center">
-            <img src={logo} alt="Vision System Logo" className="h-24 md:h-32 mx-auto mb-6 animate-fade-in" />
+            <div className="inline-block bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg mb-6 animate-fade-in">
+              <img src={logo} alt="Vision System Logo" className="h-20 md:h-28" />
+            </div>
             <h1 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6">
               Vision System
             </h1>
