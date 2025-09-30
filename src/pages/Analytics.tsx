@@ -1,10 +1,52 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, TrendingUp } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+type Sale = {
+  id: string;
+  agent_id: string;
+  product_name: string;
+  quantity: number;
+  amount: number;
+  sale_date: string;
+  city: string;
+  created_at: string;
+};
 
 const Analytics = () => {
+  const { data: salesData } = useQuery({
+    queryKey: ["sales-analytics"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("sales")
+        .select("*");
+      
+      if (error) throw error;
+      return data as Sale[];
+    },
+  });
+
+  // Calculate best selling product
+  const bestSellingProduct = salesData?.reduce((acc, sale) => {
+    const existing = acc.find(p => p.product === sale.product_name);
+    if (existing) {
+      existing.quantity += sale.quantity;
+      existing.revenue += Number(sale.amount);
+    } else {
+      acc.push({
+        product: sale.product_name,
+        quantity: sale.quantity,
+        revenue: Number(sale.amount),
+      });
+    }
+    return acc;
+  }, [] as Array<{ product: string; quantity: number; revenue: number }>)
+    .sort((a, b) => b.quantity - a.quantity)[0];
+
   const salesTrend = [
     { month: "Jan", sales: 12000, target: 15000 },
     { month: "Feb", sales: 15500, target: 15000 },
@@ -36,6 +78,39 @@ const Analytics = () => {
             Export Report
           </Button>
         </div>
+
+        {bestSellingProduct && (
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl">Best Selling Product</CardTitle>
+                  <CardDescription>Top performer by quantity sold</CardDescription>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-3xl font-bold text-foreground">{bestSellingProduct.product}</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Total Units Sold</p>
+                    <p className="text-2xl font-semibold text-foreground">{bestSellingProduct.quantity}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Total Revenue</p>
+                    <p className="text-2xl font-semibold text-foreground">${bestSellingProduct.revenue.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
