@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
+import logo from "@/assets/logo.png";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="flex-1 flex flex-col">
           <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-6 shadow-sm">
             <SidebarTrigger />
+            <img src={logo} alt="Vision System" className="h-8" />
             <h2 className="text-xl font-semibold text-card-foreground">Vision System</h2>
           </header>
           <main className="flex-1 p-6">

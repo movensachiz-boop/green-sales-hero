@@ -1,5 +1,6 @@
 import { Home, TrendingUp, MapPin, PlusCircle, BarChart3 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import logo from "@/assets/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +27,9 @@ export function DashboardSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
+        <div className="p-4 flex items-center justify-center border-b border-sidebar-border">
+          <img src={logo} alt="Vision System" className={open ? "h-12" : "h-8"} />
+        </div>
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground">
             Navigation
