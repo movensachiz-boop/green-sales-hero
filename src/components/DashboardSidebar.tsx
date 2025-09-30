@@ -1,6 +1,8 @@
-import { Home, TrendingUp, MapPin, PlusCircle, BarChart3 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Home, TrendingUp, MapPin, PlusCircle, BarChart3, LogOut } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +25,26 @@ const menuItems = [
 
 export function DashboardSidebar() {
   const { open } = useSidebar();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+      navigate("/auth");
+    }
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -54,6 +76,18 @@ export function DashboardSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleLogout}>
+                  <LogOut className="h-5 w-5" />
+                  {open && <span>Sign Out</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

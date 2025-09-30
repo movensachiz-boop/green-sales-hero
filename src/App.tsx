@@ -3,7 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import SalesEntry from "./pages/SalesEntry";
 import Leaderboard from "./pages/Leaderboard";
@@ -21,11 +23,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/sales" element={<SalesEntry />} />
-          <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
-          <Route path="/dashboard/analytics" element={<Analytics />} />
-          <Route path="/dashboard/cities" element={<Cities />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard/sales" element={<ProtectedRoute><SalesEntry /></ProtectedRoute>} />
+          <Route path="/dashboard/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+          <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/dashboard/cities" element={<ProtectedRoute><Cities /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

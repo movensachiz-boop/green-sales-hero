@@ -23,9 +23,9 @@ const Index = () => {
               Powered by Greenworld - Led by Professor Mabuya
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button size="lg" variant="secondary" className="text-lg px-8 shadow-lg hover:scale-105 transition-transform">
-                  Access Dashboard
+                  Sign In / Sign Up
                 </Button>
               </Link>
             </div>
@@ -73,7 +73,7 @@ const Index = () => {
           <p className="text-xl mb-8 opacity-90">
             Join Vision System today and take your sales tracking to the next level
           </p>
-          <Link to="/dashboard">
+          <Link to="/auth">
             <Button size="lg" variant="secondary" className="text-lg px-8">
               Get Started Now
             </Button>
