@@ -7,27 +7,67 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary to-accent py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <section className="relative overflow-hidden py-24 md:py-32 px-4">
+        {/* Gradient Background with Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary opacity-95" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.08),transparent_50%)]" />
+        
+        {/* Animated Glow Effects */}
+        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-accent/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center">
-            <div className="inline-block bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg mb-6 animate-fade-in">
-              <img src={logo} alt="Vision System Logo" className="h-20 md:h-28" />
+            {/* Logo with Glass Effect */}
+            <div className="inline-block bg-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-2xl mb-8 animate-fade-in border border-white/20">
+              <div className="bg-white rounded-2xl p-4 shadow-inner">
+                <img src={logo} alt="Vision System Logo" className="h-24 md:h-32" />
+              </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-primary-foreground mb-6">
+            
+            {/* Main Heading with Gradient Text */}
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 animate-fade-in tracking-tight">
               Vision System
             </h1>
-            <p className="text-xl md:text-2xl text-primary-foreground/90 mb-4 max-w-3xl mx-auto">
+            
+            {/* Subtitle with Enhanced Styling */}
+            <p className="text-2xl md:text-3xl lg:text-4xl text-white/95 mb-4 max-w-4xl mx-auto font-light animate-fade-in">
               Sales Tracking & Analytics Platform
             </p>
-            <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+            
+            {/* Description */}
+            <p className="text-lg md:text-xl text-white/85 mb-10 max-w-2xl mx-auto animate-fade-in font-light">
               Powered by Greenworld - Led by Professor Mabuya
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
               <Link to="/auth">
-                <Button size="lg" variant="secondary" className="text-lg px-8 shadow-lg hover:scale-105 transition-transform">
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="text-lg px-10 py-6 shadow-2xl hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] font-semibold"
+                >
                   Sign In / Sign Up
                 </Button>
               </Link>
+            </div>
+            
+            {/* Decorative Elements */}
+            <div className="mt-16 flex justify-center gap-8 text-white/60 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" />
+                <span>Real-time Analytics</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                <span>Secure & Reliable</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" style={{ animationDelay: '1s' }} />
+                <span>Easy to Use</span>
+              </div>
             </div>
           </div>
         </div>
