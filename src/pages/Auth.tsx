@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, User } from "lucide-react";
 import logo from "@/assets/logo.png";
+import authBg from "@/assets/auth-bg.jpg";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -62,11 +63,10 @@ const Auth = () => {
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-        backgroundSize: '40px 40px'
-      }} />
+      <div className="absolute inset-0">
+        <img src={authBg} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
       <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] rounded-full bg-primary/20 blur-[120px] animate-glow-pulse" />
       <div className="absolute bottom-[20%] right-[15%] w-[350px] h-[350px] rounded-full bg-accent/20 blur-[100px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
 
