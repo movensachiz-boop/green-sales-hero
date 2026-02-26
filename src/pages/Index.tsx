@@ -171,7 +171,7 @@ const Index = () => {
             <span className="text-sm text-muted-foreground">Vision System © 2026</span>
           </div>
           <p className="text-sm text-muted-foreground">Powered by Greenworld</p>
-          <p className="text-sm text-muted-foreground">Designed by Envoy +263786133259</p>
+          <p className="text-sm text-muted-foreground">Designed by Envoy <a href="https://wa.me/263786133259" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">+263786133259</a></p>
         </div>
       </footer>
     </div>);
