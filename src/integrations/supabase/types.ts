@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      inventory: {
+        Row: {
+          created_at: string
+          current_stock: number
+          id: string
+          min_stock_level: number
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_stock?: number
+          id?: string
+          min_stock_level?: number
+          product_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_stock?: number
+          id?: string
+          min_stock_level?: number
+          product_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -65,6 +92,33 @@ export type Database = {
           product_name?: string
           quantity?: number
           sale_date?: string
+        }
+        Relationships: []
+      }
+      stock_entries: {
+        Row: {
+          added_by: string
+          created_at: string
+          id: string
+          notes: string | null
+          product_name: string
+          quantity: number
+        }
+        Insert: {
+          added_by: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name: string
+          quantity: number
+        }
+        Update: {
+          added_by?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name?: string
+          quantity?: number
         }
         Relationships: []
       }

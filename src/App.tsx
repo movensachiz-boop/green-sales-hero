@@ -10,6 +10,7 @@ import SalesEntry from "./pages/SalesEntry";
 import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";
 import Cities from "./pages/Cities";
+import Stock from "./pages/Stock";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
         <Route path="/dashboard/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
         <Route path="/dashboard/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
         <Route path="/dashboard/cities" element={<ProtectedRoute><Cities /></ProtectedRoute>} />
+        <Route path="/dashboard/stock" element={<ProtectedRoute><Stock /></ProtectedRoute>} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

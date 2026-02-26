@@ -1,7 +1,8 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Download, TrendingUp, TrendingDown, Package } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,16 +18,45 @@ type Sale = {
   created_at: string;
 };
 
+type Inventory = {
+  id: string;
+  product_name: string;
+  current_stock: number;
+  min_stock_level: number;
+};
+
+type StockEntry = {
+  id: string;
+  product_name: string;
+  quantity: number;
+  created_at: string;
+};
+
 const Analytics = () => {
   const { data: salesData } = useQuery({
     queryKey: ["sales-analytics"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("sales")
-        .select("*");
-      
+      const { data, error } = await (supabase as any).from("sales").select("*");
       if (error) throw error;
       return data as Sale[];
+    },
+  });
+
+  const { data: inventory } = useQuery({
+    queryKey: ["inventory-analytics"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("inventory").select("*");
+      if (error) throw error;
+      return data as Inventory[];
+    },
+  });
+
+  const { data: stockEntries } = useQuery({
+    queryKey: ["stock-entries-analytics"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("stock_entries").select("*");
+      if (error) throw error;
+      return data as StockEntry[];
     },
   });
 
@@ -153,31 +183,93 @@ const Analytics = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>City Performance Comparison</CardTitle>
-            <CardDescription>Total sales by city this month</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" /> Stock Movement Analysis
+            </CardTitle>
+            <CardDescription>Products ranked by sales velocity — what's moving and what's not</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={cityPerformance}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="city" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--card))", 
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "0.5rem"
-                  }} 
-                />
-                <Legend />
-                <Bar 
-                  dataKey="sales" 
-                  fill="hsl(var(--primary))" 
-                  name="Total Sales ($)"
-                  radius={[8, 8, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            {(() => {
+              // Build movement data: total sold per product vs current stock
+              const productMovement = (inventory || []).map(item => {
+                const totalSold = (salesData || [])
+                  .filter(s => s.product_name.toLowerCase() === item.product_name.toLowerCase())
+                  .reduce((sum, s) => sum + s.quantity, 0);
+                const totalStocked = (stockEntries || [])
+                  .filter(e => e.product_name.toLowerCase() === item.product_name.toLowerCase())
+                  .reduce((sum, e) => sum + e.quantity, 0);
+                const turnoverRate = totalStocked > 0 ? (totalSold / totalStocked) * 100 : 0;
+                return {
+                  product: item.product_name,
+                  totalSold,
+                  currentStock: item.current_stock,
+                  totalStocked,
+                  turnoverRate,
+                };
+              }).sort((a, b) => b.turnoverRate - a.turnoverRate);
+
+              if (!productMovement.length) {
+                return <p className="text-muted-foreground text-center py-8">Add inventory and make sales to see movement analytics.</p>;
+              }
+
+              const fastMoving = productMovement.filter(p => p.turnoverRate >= 50);
+              const slowMoving = productMovement.filter(p => p.turnoverRate < 50);
+
+              return (
+                <div className="space-y-6">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={productMovement}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="product" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                      <YAxis stroke="hsl(var(--muted-foreground))" />
+                      <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "0.5rem" }} />
+                      <Legend />
+                      <Bar dataKey="totalSold" fill="hsl(var(--primary))" name="Units Sold" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="currentStock" fill="hsl(var(--muted-foreground))" name="Current Stock" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-3">
+                      <h4 className="font-semibold flex items-center gap-2 text-foreground">
+                        <TrendingUp className="h-4 w-4 text-primary" /> Fast Moving
+                      </h4>
+                      {fastMoving.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No fast-moving products yet</p>
+                      ) : (
+                        fastMoving.map(p => (
+                          <div key={p.product} className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/10">
+                            <span className="font-medium text-foreground">{p.product}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">{p.totalSold} sold</span>
+                              <Badge variant="secondary" className="bg-primary/10 text-primary">{p.turnoverRate.toFixed(0)}%</Badge>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="font-semibold flex items-center gap-2 text-foreground">
+                        <TrendingDown className="h-4 w-4 text-destructive" /> Slow Moving
+                      </h4>
+                      {slowMoving.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No slow-moving products</p>
+                      ) : (
+                        slowMoving.map(p => (
+                          <div key={p.product} className="flex items-center justify-between p-3 rounded-lg bg-destructive/5 border border-destructive/10">
+                            <span className="font-medium text-foreground">{p.product}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-muted-foreground">{p.totalSold} sold</span>
+                              <Badge variant="destructive">{p.turnoverRate.toFixed(0)}%</Badge>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
       </div>
