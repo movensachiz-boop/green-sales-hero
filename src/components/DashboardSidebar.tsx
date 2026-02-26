@@ -31,34 +31,26 @@ export function DashboardSidebar() {
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
-    
     if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to sign out. Please try again.", variant: "destructive" });
     } else {
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
+      toast({ title: "Signed out", description: "You have been successfully signed out." });
       navigate("/auth");
     }
   };
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
-        <div className="p-4 flex items-center justify-center border-b border-sidebar-border">
-          <img src={logo} alt="Vision System" className={open ? "h-12" : "h-8"} />
+      <SidebarContent className="flex flex-col">
+        <div className="p-5 flex items-center justify-center border-b border-sidebar-border">
+          <img src={logo} alt="Vision System" className={`transition-all duration-200 ${open ? "h-10" : "h-7"}`} />
         </div>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground">
-            Navigation
+        <SidebarGroup className="flex-1 pt-4">
+          <SidebarGroupLabel className="text-sidebar-foreground/50 uppercase text-[11px] tracking-widest font-medium px-4 mb-1">
+            Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-0.5 px-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -66,13 +58,15 @@ export function DashboardSidebar() {
                       to={item.url}
                       end={item.url === "/dashboard"}
                       className={({ isActive }) =>
-                        isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                          : "hover:bg-sidebar-accent/50"
+                        `rounded-xl transition-all duration-200 ${
+                          isActive
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                        }`
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      {open && <span>{item.title}</span>}
+                      <item.icon className="h-[18px] w-[18px]" />
+                      {open && <span className="font-medium">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -80,13 +74,13 @@ export function DashboardSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup className="mt-auto">
+        <SidebarGroup className="pb-4">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="px-2">
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleLogout}>
-                  <LogOut className="h-5 w-5" />
-                  {open && <span>Sign Out</span>}
+                <SidebarMenuButton onClick={handleLogout} className="rounded-xl text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50">
+                  <LogOut className="h-[18px] w-[18px]" />
+                  {open && <span className="font-medium">Sign Out</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

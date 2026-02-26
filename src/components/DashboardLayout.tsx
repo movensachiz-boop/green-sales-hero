@@ -9,15 +9,18 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-secondary/20">
+      <div className="flex min-h-screen w-full bg-background">
         <DashboardSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-6 shadow-sm">
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-border/60 bg-card/80 backdrop-blur-xl px-6">
             <SidebarTrigger />
-            <img src={logo} alt="Vision System" className="h-8" />
-            <h2 className="text-xl font-semibold text-card-foreground">Vision System</h2>
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="Vision System" className="h-7" />
+              <div className="h-5 w-px bg-border" />
+              <h2 className="text-base font-display font-semibold text-card-foreground">Vision System</h2>
+            </div>
           </header>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 lg:p-8">
             {children}
           </main>
         </div>

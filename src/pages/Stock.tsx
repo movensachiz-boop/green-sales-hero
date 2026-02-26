@@ -60,37 +60,22 @@ const Stock = () => {
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-
       const qty = parseInt(quantity);
-
-      // Upsert inventory
       const existing = inventory?.find(i => i.product_name.toLowerCase() === productName.toLowerCase());
       if (existing) {
-        const { error } = await (supabase as any)
-          .from("inventory")
-          .update({ current_stock: existing.current_stock + qty, min_stock_level: parseInt(minStock) })
-          .eq("id", existing.id);
+        const { error } = await (supabase as any).from("inventory").update({ current_stock: existing.current_stock + qty, min_stock_level: parseInt(minStock) }).eq("id", existing.id);
         if (error) throw error;
       } else {
-        const { error } = await (supabase as any)
-          .from("inventory")
-          .insert({ product_name: productName, current_stock: qty, min_stock_level: parseInt(minStock) });
+        const { error } = await (supabase as any).from("inventory").insert({ product_name: productName, current_stock: qty, min_stock_level: parseInt(minStock) });
         if (error) throw error;
       }
-
-      // Log stock entry
-      const { error: entryError } = await (supabase as any)
-        .from("stock_entries")
-        .insert({ product_name: productName, quantity: qty, notes: notes || null, added_by: user.id });
+      const { error: entryError } = await (supabase as any).from("stock_entries").insert({ product_name: productName, quantity: qty, notes: notes || null, added_by: user.id });
       if (entryError) throw entryError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["inventory"] });
       queryClient.invalidateQueries({ queryKey: ["stock-entries"] });
-      setProductName("");
-      setQuantity("");
-      setMinStock("10");
-      setNotes("");
+      setProductName(""); setQuantity(""); setMinStock("10"); setNotes("");
       toast({ title: "Stock added", description: "Inventory updated successfully." });
     },
     onError: (error: Error) => {
@@ -108,23 +93,23 @@ const Stock = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Stock Management</h1>
-          <p className="text-muted-foreground">Track and manage your inventory</p>
+          <h1 className="text-3xl font-display font-bold text-foreground">Stock Management</h1>
+          <p className="text-muted-foreground mt-1">Track and manage your inventory</p>
         </div>
 
         {lowStockItems.length > 0 && (
-          <Card className="border-destructive/50 bg-destructive/5">
+          <Card className="border-destructive/30 bg-destructive/5 rounded-2xl">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-destructive">
+              <CardTitle className="flex items-center gap-2 text-destructive font-display">
                 <AlertTriangle className="h-5 w-5" /> Low Stock Alert
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {lowStockItems.map(item => (
-                  <Badge key={item.id} variant="destructive">
+                  <Badge key={item.id} variant="destructive" className="rounded-lg">
                     {item.product_name}: {item.current_stock} left
                   </Badge>
                 ))}
@@ -134,10 +119,13 @@ const Stock = () => {
         )}
 
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-1">
+          <Card className="lg:col-span-1 rounded-2xl shadow-sm border-border/60">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" /> Add Stock
+              <CardTitle className="flex items-center gap-2 font-display">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Plus className="h-5 w-5" />
+                </div>
+                Add Stock
               </CardTitle>
               <CardDescription>Add new or restock existing products</CardDescription>
             </CardHeader>
@@ -145,31 +133,34 @@ const Stock = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="product">Product Name</Label>
-                  <Input id="product" value={productName} onChange={e => setProductName(e.target.value)} placeholder="e.g. Solar Panel 300W" required />
+                  <Input id="product" value={productName} onChange={e => setProductName(e.target.value)} placeholder="e.g. Solar Panel 300W" required className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="qty">Quantity</Label>
-                  <Input id="qty" type="number" min="1" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="0" required />
+                  <Input id="qty" type="number" min="1" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="0" required className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="minStock">Min Stock Level</Label>
-                  <Input id="minStock" type="number" min="0" value={minStock} onChange={e => setMinStock(e.target.value)} />
+                  <Input id="minStock" type="number" min="0" value={minStock} onChange={e => setMinStock(e.target.value)} className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="notes">Notes (optional)</Label>
-                  <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Supplier, batch number, etc." />
+                  <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Supplier, batch number, etc." className="rounded-xl" />
                 </div>
-                <Button type="submit" className="w-full" disabled={addStockMutation.isPending}>
+                <Button type="submit" className="w-full rounded-xl h-11 font-semibold" disabled={addStockMutation.isPending}>
                   {addStockMutation.isPending ? "Adding..." : "Add Stock"}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 rounded-2xl shadow-sm border-border/60">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" /> Current Inventory
+              <CardTitle className="flex items-center gap-2 font-display">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Package className="h-5 w-5" />
+                </div>
+                Current Inventory
               </CardTitle>
               <CardDescription>All products and their stock levels</CardDescription>
             </CardHeader>
@@ -179,66 +170,70 @@ const Stock = () => {
               ) : !inventory?.length ? (
                 <p className="text-muted-foreground text-center py-8">No inventory yet. Add your first product.</p>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead className="text-right">Stock</TableHead>
-                      <TableHead className="text-right">Min Level</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {inventory.map(item => (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.product_name}</TableCell>
-                        <TableCell className="text-right">{item.current_stock}</TableCell>
-                        <TableCell className="text-right">{item.min_stock_level}</TableCell>
-                        <TableCell>
-                          {item.current_stock <= 0 ? (
-                            <Badge variant="destructive">Out of Stock</Badge>
-                          ) : item.current_stock <= item.min_stock_level ? (
-                            <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Low</Badge>
-                          ) : (
-                            <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20">In Stock</Badge>
-                          )}
-                        </TableCell>
+                <div className="rounded-xl border border-border/60 overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableHead>Product</TableHead>
+                        <TableHead className="text-right">Stock</TableHead>
+                        <TableHead className="text-right">Min Level</TableHead>
+                        <TableHead>Status</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {inventory.map(item => (
+                        <TableRow key={item.id}>
+                          <TableCell className="font-medium">{item.product_name}</TableCell>
+                          <TableCell className="text-right font-display font-semibold">{item.current_stock}</TableCell>
+                          <TableCell className="text-right text-muted-foreground">{item.min_stock_level}</TableCell>
+                          <TableCell>
+                            {item.current_stock <= 0 ? (
+                              <Badge variant="destructive" className="rounded-lg">Out of Stock</Badge>
+                            ) : item.current_stock <= item.min_stock_level ? (
+                              <Badge variant="secondary" className="bg-warning/10 text-warning border-warning/20 rounded-lg">Low</Badge>
+                            ) : (
+                              <Badge variant="secondary" className="bg-success/10 text-success border-success/20 rounded-lg">In Stock</Badge>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
 
         {stockEntries && stockEntries.length > 0 && (
-          <Card>
+          <Card className="rounded-2xl shadow-sm border-border/60">
             <CardHeader>
-              <CardTitle>Recent Stock Entries</CardTitle>
+              <CardTitle className="font-display">Recent Stock Entries</CardTitle>
               <CardDescription>Latest additions to inventory</CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead className="text-right">Qty Added</TableHead>
-                    <TableHead>Notes</TableHead>
-                    <TableHead>Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {stockEntries.map(entry => (
-                    <TableRow key={entry.id}>
-                      <TableCell className="font-medium">{entry.product_name}</TableCell>
-                      <TableCell className="text-right">+{entry.quantity}</TableCell>
-                      <TableCell className="text-muted-foreground">{entry.notes || "—"}</TableCell>
-                      <TableCell className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</TableCell>
+              <div className="rounded-xl border border-border/60 overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50 hover:bg-muted/50">
+                      <TableHead>Product</TableHead>
+                      <TableHead className="text-right">Qty Added</TableHead>
+                      <TableHead>Notes</TableHead>
+                      <TableHead>Date</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {stockEntries.map(entry => (
+                      <TableRow key={entry.id}>
+                        <TableCell className="font-medium">{entry.product_name}</TableCell>
+                        <TableCell className="text-right font-display font-semibold text-success">+{entry.quantity}</TableCell>
+                        <TableCell className="text-muted-foreground">{entry.notes || "—"}</TableCell>
+                        <TableCell className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}

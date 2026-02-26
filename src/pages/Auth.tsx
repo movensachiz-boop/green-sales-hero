@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { ArrowRight, User } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Auth = () => {
@@ -18,54 +19,28 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/dashboard");
-      }
+      if (session) navigate("/dashboard");
     });
-
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/dashboard");
-      }
+      if (session) navigate("/dashboard");
     });
-
     return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          full_name: fullName,
-        },
-      },
+      email, password,
+      options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: fullName } },
     });
-
     setLoading(false);
-
     if (error) {
-      toast({
-        title: "Sign up failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
     } else {
-      toast({
-        title: "Success!",
-        description: "Your account has been created. You can now sign in.",
-      });
-      setEmail("");
-      setPassword("");
-      setFullName("");
+      toast({ title: "Success!", description: "Your account has been created. You can now sign in." });
+      setEmail(""); setPassword(""); setFullName("");
     }
   };
 
@@ -73,79 +48,57 @@ const Auth = () => {
     setLoading(true);
     const { error } = await supabase.auth.signInAnonymously();
     setLoading(false);
-    if (error) {
-      toast({
-        title: "Guest login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+    if (error) toast({ title: "Guest login failed", description: error.message, variant: "destructive" });
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-
-    if (error) {
-      toast({
-        title: "Sign in failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+    if (error) toast({ title: "Sign in failed", description: error.message, variant: "destructive" });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-accent flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <img src={logo} alt="Vision System Logo" className="h-16" />
+    <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+        backgroundSize: '40px 40px'
+      }} />
+      <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] rounded-full bg-primary/20 blur-[120px] animate-glow-pulse" />
+      <div className="absolute bottom-[20%] right-[15%] w-[350px] h-[350px] rounded-full bg-accent/20 blur-[100px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
+
+      <Card className="w-full max-w-md relative z-10 shadow-2xl border-border/50 rounded-3xl overflow-hidden">
+        <CardHeader className="text-center pb-2 pt-8">
+          <div className="flex justify-center mb-5">
+            <div className="bg-primary/10 rounded-2xl p-4">
+              <img src={logo} alt="Vision System Logo" className="h-14" />
+            </div>
           </div>
-          <CardTitle className="text-2xl">Vision System</CardTitle>
-          <CardDescription>Sales Tracking & Analytics Platform</CardDescription>
+          <CardTitle className="text-2xl font-display">Welcome back</CardTitle>
+          <CardDescription>Sign in to Vision System</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-8 pb-8">
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-6 rounded-xl">
+              <TabsTrigger value="signin" className="rounded-lg">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="rounded-lg">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signin-email">Email</Label>
-                  <Input
-                    id="signin-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                  <Input id="signin-email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signin-password">Password</Label>
-                  <Input
-                    id="signin-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                  />
+                  <Input id="signin-password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="rounded-xl h-11" />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Signing in..." : "Sign In"}
+                <Button type="submit" className="w-full rounded-xl h-11 font-semibold group" disabled={loading}>
+                  {loading ? "Signing in..." : <>Sign In <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" /></>}
                 </Button>
               </form>
             </TabsContent>
@@ -154,53 +107,26 @@ const Auth = () => {
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signup-name">Full Name</Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
+                  <Input id="signup-name" type="text" placeholder="John Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} required className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+                  <Input id="signup-email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="rounded-xl h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                  />
+                  <Input id="signup-password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="rounded-xl h-11" />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating account..." : "Sign Up"}
+                <Button type="submit" className="w-full rounded-xl h-11 font-semibold" disabled={loading}>
+                  {loading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
           
-          <div className="mt-4 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGuestLogin}
-              disabled={loading}
-            >
+          <div className="mt-6 pt-6 border-t border-border">
+            <Button type="button" variant="ghost" className="w-full rounded-xl h-11 text-muted-foreground hover:text-foreground" onClick={handleGuestLogin} disabled={loading}>
+              <User className="mr-2 h-4 w-4" />
               {loading ? "Entering..." : "Continue as Guest"}
             </Button>
             <p className="text-xs text-muted-foreground text-center mt-2">

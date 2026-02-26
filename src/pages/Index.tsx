@@ -1,137 +1,203 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { BarChart3, TrendingUp, Users, MapPin } from "lucide-react";
+import { BarChart3, TrendingUp, Users, MapPin, ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 md:py-32 px-4">
-        {/* Gradient Background with Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary opacity-95" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.08),transparent_50%)]" />
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center px-4">
+        {/* Deep gradient background */}
+        <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
         
-        {/* Animated Glow Effects */}
-        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-accent/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        {/* Mesh pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }} />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-1/4 left-[10%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px] animate-glow-pulse" />
+        <div className="absolute bottom-1/4 right-[10%] w-[400px] h-[400px] rounded-full bg-accent/25 blur-[100px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] rounded-full bg-primary/15 blur-[80px] animate-glow-pulse" style={{ animationDelay: '4s' }} />
         
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center">
-            {/* Logo with Glass Effect */}
-            <div className="inline-block bg-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-2xl mb-8 animate-fade-in border border-white/20">
-              <div className="bg-white rounded-2xl p-4 shadow-inner">
-                <img src={logo} alt="Vision System Logo" className="h-24 md:h-32" />
+            {/* Logo */}
+            <div className="inline-flex items-center justify-center mb-10 opacity-0 animate-fade-in-scale">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary-foreground/20 rounded-3xl blur-xl" />
+                <div className="relative glass-strong rounded-3xl p-5 border border-primary-foreground/10">
+                  <div className="bg-primary-foreground rounded-2xl p-4">
+                    <img src={logo} alt="Vision System Logo" className="h-20 md:h-28" />
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground/90 text-sm font-medium mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <Sparkles className="h-4 w-4" />
+              Powered by Greenworld
+            </div>
             
-            {/* Main Heading with Gradient Text */}
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 animate-fade-in tracking-tight">
+            {/* Main Heading */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold text-primary-foreground mb-6 opacity-0 animate-slide-up tracking-tight leading-[0.9]" style={{ animationDelay: '0.3s' }}>
               Vision System
             </h1>
             
-            {/* Subtitle with Enhanced Styling */}
-            <p className="text-2xl md:text-3xl lg:text-4xl text-white/95 mb-4 max-w-4xl mx-auto font-light animate-fade-in">
+            <p className="text-xl md:text-2xl text-primary-foreground/80 mb-4 max-w-2xl mx-auto font-light opacity-0 animate-slide-up" style={{ animationDelay: '0.4s' }}>
               Sales Tracking & Analytics Platform
             </p>
             
-            {/* Description */}
-            <p className="text-lg md:text-xl text-white/85 mb-10 max-w-2xl mx-auto animate-fade-in font-light">
-              Powered by Greenworld - Led by Professor Mabuya
+            <p className="text-base md:text-lg text-primary-foreground/60 mb-12 max-w-xl mx-auto opacity-0 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+              Led by Professor Mabuya — track performance, manage inventory, and grow your team.
             </p>
             
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+            {/* CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-slide-up" style={{ animationDelay: '0.6s' }}>
               <Link to="/auth">
                 <Button 
                   size="lg" 
-                  variant="secondary" 
-                  className="text-lg px-10 py-6 shadow-2xl hover:scale-105 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] font-semibold"
+                  className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group"
                 >
-                  Sign In / Sign Up
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
-            
-            {/* Decorative Elements */}
-            <div className="mt-16 flex justify-center gap-8 text-white/60 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" />
-                <span>Real-time Analytics</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" style={{ animationDelay: '0.5s' }} />
-                <span>Secure & Reliable</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" style={{ animationDelay: '1s' }} />
-                <span>Easy to Use</span>
-              </div>
+
+            {/* Stats row */}
+            <div className="mt-20 grid grid-cols-3 gap-8 max-w-lg mx-auto opacity-0 animate-slide-up" style={{ animationDelay: '0.8s' }}>
+              {[
+                { label: "Active Agents", value: "100+" },
+                { label: "Products", value: "65+" },
+                { label: "Cities", value: "10+" },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="text-2xl md:text-3xl font-display font-bold text-primary-foreground">{stat.value}</div>
+                  <div className="text-sm text-primary-foreground/50 mt-1">{stat.label}</div>
+                </div>
+              ))}
             </div>
+          </div>
+        </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 px-4 relative">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-primary uppercase tracking-widest mb-3">Features</p>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+              Everything you need for
+              <span className="gradient-text"> sales excellence</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              A complete platform to track, analyze, and optimize your team's performance
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <FeatureCard
+              icon={<BarChart3 className="h-6 w-6" />}
+              title="Real-time Analytics"
+              description="Track sales performance across all branches with live data"
+            />
+            <FeatureCard
+              icon={<TrendingUp className="h-6 w-6" />}
+              title="Leaderboards"
+              description="Weekly and monthly rankings for top performers"
+            />
+            <FeatureCard
+              icon={<Users className="h-6 w-6" />}
+              title="Team Management"
+              description="Manage agents and track individual contributions"
+            />
+            <FeatureCard
+              icon={<MapPin className="h-6 w-6" />}
+              title="City Tracking"
+              description="Monitor sales across all Zimbabwe cities"
+            />
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-secondary/30">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-            Powerful Features for Sales Excellence
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard
-              icon={<BarChart3 className="h-10 w-10 text-primary" />}
-              title="Real-time Analytics"
-              description="Track sales performance across all branches instantly"
-            />
-            <FeatureCard
-              icon={<TrendingUp className="h-10 w-10 text-primary" />}
-              title="Performance Rankings"
-              description="Weekly and monthly leaderboards for top performers"
-            />
-            <FeatureCard
-              icon={<Users className="h-10 w-10 text-primary" />}
-              title="Team Management"
-              description="Manage agents and branch managers efficiently"
-            />
-            <FeatureCard
-              icon={<MapPin className="h-10 w-10 text-primary" />}
-              title="City Tracking"
-              description="Monitor sales performance across all Zimbabwe cities"
-            />
+      {/* Trust Section */}
+      <section className="py-24 px-4 bg-secondary/50">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: <Zap className="h-8 w-8" />, title: "Lightning Fast", desc: "Record sales in seconds with our streamlined interface" },
+              { icon: <Shield className="h-8 w-8" />, title: "Secure & Reliable", desc: "Your data is protected with enterprise-grade security" },
+              { icon: <Sparkles className="h-8 w-8" />, title: "Smart Insights", desc: "AI-powered analytics to help you make better decisions" },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-4 p-6">
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="font-display font-semibold text-lg text-foreground mb-1">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-primary text-primary-foreground">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Transform Your Sales?
+      <section className="py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }} />
+        <div className="container mx-auto max-w-3xl text-center relative z-10">
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-primary-foreground mb-6">
+            Ready to transform your sales?
           </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join Vision System today and take your sales tracking to the next level
+          <p className="text-xl text-primary-foreground/70 mb-10 max-w-xl mx-auto">
+            Join Vision System today and take your team's performance to the next level
           </p>
           <Link to="/auth">
-            <Button size="lg" variant="secondary" className="text-lg px-8">
+            <Button 
+              size="lg" 
+              className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group"
+            >
               Get Started Now
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 border-t border-border">
+        <div className="container mx-auto max-w-6xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Vision System" className="h-6 opacity-60" />
+            <span className="text-sm text-muted-foreground">Vision System © 2026</span>
+          </div>
+          <p className="text-sm text-muted-foreground">Powered by Greenworld</p>
+        </div>
+      </footer>
     </div>
   );
 };
 
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
-  return (
-    <div className="bg-card p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-border">
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2 text-card-foreground">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
+  <div className="group relative bg-card rounded-2xl p-6 border border-border shadow-sm card-hover">
+    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+      {icon}
     </div>
-  );
-};
+    <h3 className="text-lg font-display font-semibold mb-2 text-card-foreground">{title}</h3>
+    <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
+  </div>
+);
 
 export default Index;
