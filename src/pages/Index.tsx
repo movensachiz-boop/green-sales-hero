@@ -20,7 +20,7 @@ const Index = () => {
           <div className="text-center">
             {/* Logo */}
             <div className="inline-flex items-center justify-center mb-10 opacity-0 animate-fade-in-scale">
-              <img src={visionLogo} alt="Vision System Logo" className="h-32 md:h-44 drop-shadow-2xl" />
+              
             </div>
 
             {/* Badge */}
@@ -45,10 +45,10 @@ const Index = () => {
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-slide-up" style={{ animationDelay: '0.6s' }}>
               <Link to="/auth">
-                <Button 
-                  size="lg" 
-                  className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group"
-                >
+                <Button
+                  size="lg"
+                  className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group">
+
                   Get Started
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -58,15 +58,15 @@ const Index = () => {
             {/* Stats row */}
             <div className="mt-20 grid grid-cols-3 gap-8 max-w-lg mx-auto opacity-0 animate-slide-up" style={{ animationDelay: '0.8s' }}>
               {[
-                { label: "Active Agents", value: "100+" },
-                { label: "Products", value: "65+" },
-                { label: "Cities", value: "10+" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
+              { label: "Active Agents", value: "100+" },
+              { label: "Products", value: "65+" },
+              { label: "Cities", value: "10+" }].
+              map((stat) =>
+              <div key={stat.label} className="text-center">
                   <div className="text-2xl md:text-3xl font-display font-bold text-primary-foreground">{stat.value}</div>
                   <div className="text-sm text-primary-foreground/50 mt-1">{stat.label}</div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -93,23 +93,23 @@ const Index = () => {
             <FeatureCard
               icon={<BarChart3 className="h-6 w-6" />}
               title="Real-time Analytics"
-              description="Track sales performance across all branches with live data"
-            />
+              description="Track sales performance across all branches with live data" />
+
             <FeatureCard
               icon={<TrendingUp className="h-6 w-6" />}
               title="Leaderboards"
-              description="Weekly and monthly rankings for top performers"
-            />
+              description="Weekly and monthly rankings for top performers" />
+
             <FeatureCard
               icon={<Users className="h-6 w-6" />}
               title="Team Management"
-              description="Manage agents and track individual contributions"
-            />
+              description="Manage agents and track individual contributions" />
+
             <FeatureCard
               icon={<MapPin className="h-6 w-6" />}
               title="City Tracking"
-              description="Monitor sales across all Zimbabwe cities"
-            />
+              description="Monitor sales across all Zimbabwe cities" />
+
           </div>
         </div>
       </section>
@@ -119,11 +119,11 @@ const Index = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: <Zap className="h-8 w-8" />, title: "Lightning Fast", desc: "Record sales in seconds with our streamlined interface" },
-              { icon: <Shield className="h-8 w-8" />, title: "Secure & Reliable", desc: "Your data is protected with enterprise-grade security" },
-              { icon: <Sparkles className="h-8 w-8" />, title: "Smart Insights", desc: "AI-powered analytics to help you make better decisions" },
-            ].map((item) => (
-              <div key={item.title} className="flex items-start gap-4 p-6">
+            { icon: <Zap className="h-8 w-8" />, title: "Lightning Fast", desc: "Record sales in seconds with our streamlined interface" },
+            { icon: <Shield className="h-8 w-8" />, title: "Secure & Reliable", desc: "Your data is protected with enterprise-grade security" },
+            { icon: <Sparkles className="h-8 w-8" />, title: "Smart Insights", desc: "AI-powered analytics to help you make better decisions" }].
+            map((item) =>
+            <div key={item.title} className="flex items-start gap-4 p-6">
                 <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                   {item.icon}
                 </div>
@@ -132,7 +132,7 @@ const Index = () => {
                   <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -152,10 +152,10 @@ const Index = () => {
             Join Vision System today and take your team's performance to the next level
           </p>
           <Link to="/auth">
-            <Button 
-              size="lg" 
-              className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group"
-            >
+            <Button
+              size="lg"
+              className="text-lg px-10 py-7 bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-0.5 rounded-2xl font-semibold group">
+
               Get Started Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -173,18 +173,18 @@ const Index = () => {
           <p className="text-sm text-muted-foreground">Powered by Greenworld</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 };
 
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="group relative bg-card rounded-2xl p-6 border border-border shadow-sm card-hover">
+const FeatureCard = ({ icon, title, description }: {icon: React.ReactNode;title: string;description: string;}) =>
+<div className="group relative bg-card rounded-2xl p-6 border border-border shadow-sm card-hover">
     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
       {icon}
     </div>
     <h3 className="text-lg font-display font-semibold mb-2 text-card-foreground">{title}</h3>
     <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
-  </div>
-);
+  </div>;
+
 
 export default Index;
