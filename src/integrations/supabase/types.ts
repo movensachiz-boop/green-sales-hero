@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      city_inventory: {
+        Row: {
+          city: string
+          created_at: string
+          current_stock: number
+          id: string
+          min_stock_level: number
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          current_stock?: number
+          id?: string
+          min_stock_level?: number
+          product_name: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          current_stock?: number
+          id?: string
+          min_stock_level?: number
+          product_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      city_stock_reports: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          notes: string | null
+          product_name: string
+          quantity_distributed: number
+          quantity_remaining: number
+          quantity_sold: number
+          reported_by: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name: string
+          quantity_distributed?: number
+          quantity_remaining?: number
+          quantity_sold?: number
+          reported_by: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_name?: string
+          quantity_distributed?: number
+          quantity_remaining?: number
+          quantity_sold?: number
+          reported_by?: string
+        }
+        Relationships: []
+      }
       inventory: {
         Row: {
           created_at: string

@@ -1,4 +1,4 @@
-import { Home, TrendingUp, MapPin, PlusCircle, BarChart3, LogOut, Package } from "lucide-react";
+import { Home, TrendingUp, MapPin, PlusCircle, BarChart3, LogOut, Package, Truck } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,7 @@ const menuItems = [
   { title: "Leaderboard", url: "/dashboard/leaderboard", icon: TrendingUp },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
   { title: "Cities", url: "/dashboard/cities", icon: MapPin },
+  { title: "Distribute", url: "/dashboard/city-stock", icon: Truck },
 ];
 
 export function DashboardSidebar() {
