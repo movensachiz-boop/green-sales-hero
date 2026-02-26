@@ -2,38 +2,25 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { BarChart3, TrendingUp, Users, MapPin, ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
 import logo from "@/assets/logo.png";
+import heroBg from "@/assets/hero-bg.jpg";
+import visionLogo from "@/assets/vision-system-hero.png";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center px-4">
-        {/* Deep gradient background */}
-        <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
-        
-        {/* Mesh pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }} />
-        
-        {/* Floating orbs */}
-        <div className="absolute top-1/4 left-[10%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px] animate-glow-pulse" />
-        <div className="absolute bottom-1/4 right-[10%] w-[400px] h-[400px] rounded-full bg-accent/25 blur-[100px] animate-glow-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] rounded-full bg-primary/15 blur-[80px] animate-glow-pulse" style={{ animationDelay: '4s' }} />
+        {/* Hero background image */}
+        <div className="absolute inset-0">
+          <img src={heroBg} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
         
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center">
             {/* Logo */}
             <div className="inline-flex items-center justify-center mb-10 opacity-0 animate-fade-in-scale">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary-foreground/20 rounded-3xl blur-xl" />
-                <div className="relative glass-strong rounded-3xl p-5 border border-primary-foreground/10">
-                  <div className="bg-primary-foreground rounded-2xl p-4">
-                    <img src={logo} alt="Vision System Logo" className="h-20 md:h-28" />
-                  </div>
-                </div>
-              </div>
+              <img src={visionLogo} alt="Vision System Logo" className="h-32 md:h-44 drop-shadow-2xl" />
             </div>
 
             {/* Badge */}
