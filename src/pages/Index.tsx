@@ -4,6 +4,7 @@ import { BarChart3, TrendingUp, Users, MapPin, ArrowRight, Sparkles, Shield, Zap
 import logo from "@/assets/logo.png";
 import heroBg from "@/assets/hero-bg.jpg";
 import visionLogo from "@/assets/vision-system-hero.png";
+import ctaBg from "@/assets/cta-bg.jpg";
 
 const Index = () => {
   return (
@@ -139,11 +140,10 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: 'var(--gradient-hero)' }} />
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }} />
+        <div className="absolute inset-0">
+          <img src={ctaBg} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/60" />
+        </div>
         <div className="container mx-auto max-w-3xl text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-display font-bold text-primary-foreground mb-6">
             Ready to transform your sales?
