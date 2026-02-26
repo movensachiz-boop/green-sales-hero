@@ -1,16 +1,13 @@
-import { useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Package, Plus, AlertTriangle } from "lucide-react";
+import { Package, AlertTriangle } from "lucide-react";
+import { AddStockForm } from "@/components/stock/AddStockForm";
+import { RemoveStockForm } from "@/components/stock/RemoveStockForm";
 
 type Inventory = {
   id: string;
@@ -26,18 +23,22 @@ type StockEntry = {
   product_name: string;
   quantity: number;
   notes: string | null;
+  image_url: string | null;
   added_by: string;
   created_at: string;
 };
 
-const Stock = () => {
-  const [productName, setProductName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [minStock, setMinStock] = useState("10");
-  const [notes, setNotes] = useState("");
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+type StockRemoval = {
+  id: string;
+  product_name: string;
+  quantity: number;
+  reason: string | null;
+  image_url: string | null;
+  removed_by: string;
+  created_at: string;
+};
 
+const Stock = () => {
   const { data: inventory, isLoading: loadingInventory } = useQuery({
     queryKey: ["inventory"],
     queryFn: async () => {
@@ -56,38 +57,14 @@ const Stock = () => {
     },
   });
 
-  const addStockMutation = useMutation({
-    mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-      const qty = parseInt(quantity);
-      const existing = inventory?.find(i => i.product_name.toLowerCase() === productName.toLowerCase());
-      if (existing) {
-        const { error } = await (supabase as any).from("inventory").update({ current_stock: existing.current_stock + qty, min_stock_level: parseInt(minStock) }).eq("id", existing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await (supabase as any).from("inventory").insert({ product_name: productName, current_stock: qty, min_stock_level: parseInt(minStock) });
-        if (error) throw error;
-      }
-      const { error: entryError } = await (supabase as any).from("stock_entries").insert({ product_name: productName, quantity: qty, notes: notes || null, added_by: user.id });
-      if (entryError) throw entryError;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inventory"] });
-      queryClient.invalidateQueries({ queryKey: ["stock-entries"] });
-      setProductName(""); setQuantity(""); setMinStock("10"); setNotes("");
-      toast({ title: "Stock added", description: "Inventory updated successfully." });
-    },
-    onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+  const { data: stockRemovals } = useQuery({
+    queryKey: ["stock-removals"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).from("stock_removals").select("*").order("created_at", { ascending: false }).limit(20);
+      if (error) throw error;
+      return data as StockRemoval[];
     },
   });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!productName || !quantity) return;
-    addStockMutation.mutate();
-  };
 
   const lowStockItems = inventory?.filter(i => i.current_stock <= i.min_stock_level) || [];
 
@@ -119,40 +96,20 @@ const Stock = () => {
         )}
 
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-1 rounded-2xl shadow-sm border-border/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 font-display">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Plus className="h-5 w-5" />
-                </div>
-                Add Stock
-              </CardTitle>
-              <CardDescription>Add new or restock existing products</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="product">Product Name</Label>
-                  <Input id="product" value={productName} onChange={e => setProductName(e.target.value)} placeholder="e.g. Solar Panel 300W" required className="rounded-xl h-11" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="qty">Quantity</Label>
-                  <Input id="qty" type="number" min="1" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="0" required className="rounded-xl h-11" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="minStock">Min Stock Level</Label>
-                  <Input id="minStock" type="number" min="0" value={minStock} onChange={e => setMinStock(e.target.value)} className="rounded-xl h-11" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes (optional)</Label>
-                  <Textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Supplier, batch number, etc." className="rounded-xl" />
-                </div>
-                <Button type="submit" className="w-full rounded-xl h-11 font-semibold" disabled={addStockMutation.isPending}>
-                  {addStockMutation.isPending ? "Adding..." : "Add Stock"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <div className="lg:col-span-1 space-y-6">
+            <Tabs defaultValue="add" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 rounded-xl">
+                <TabsTrigger value="add" className="rounded-lg">Add Stock</TabsTrigger>
+                <TabsTrigger value="remove" className="rounded-lg">Remove Stock</TabsTrigger>
+              </TabsList>
+              <TabsContent value="add">
+                <AddStockForm inventory={inventory} />
+              </TabsContent>
+              <TabsContent value="remove">
+                <RemoveStockForm inventory={inventory} />
+              </TabsContent>
+            </Tabs>
+          </div>
 
           <Card className="lg:col-span-2 rounded-2xl shadow-sm border-border/60">
             <CardHeader>
@@ -205,38 +162,86 @@ const Stock = () => {
           </Card>
         </div>
 
-        {stockEntries && stockEntries.length > 0 && (
-          <Card className="rounded-2xl shadow-sm border-border/60">
-            <CardHeader>
-              <CardTitle className="font-display">Recent Stock Entries</CardTitle>
-              <CardDescription>Latest additions to inventory</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-xl border border-border/60 overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableHead>Product</TableHead>
-                      <TableHead className="text-right">Qty Added</TableHead>
-                      <TableHead>Notes</TableHead>
-                      <TableHead>Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {stockEntries.map(entry => (
-                      <TableRow key={entry.id}>
-                        <TableCell className="font-medium">{entry.product_name}</TableCell>
-                        <TableCell className="text-right font-display font-semibold text-success">+{entry.quantity}</TableCell>
-                        <TableCell className="text-muted-foreground">{entry.notes || "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</TableCell>
+        {/* Recent entries & removals */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {stockEntries && stockEntries.length > 0 && (
+            <Card className="rounded-2xl shadow-sm border-border/60">
+              <CardHeader>
+                <CardTitle className="font-display">Recent Stock Entries</CardTitle>
+                <CardDescription>Latest additions to inventory</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-xl border border-border/60 overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableHead>Product</TableHead>
+                        <TableHead className="text-right">Qty</TableHead>
+                        <TableHead>Photo</TableHead>
+                        <TableHead>Date</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                    </TableHeader>
+                    <TableBody>
+                      {stockEntries.map(entry => (
+                        <TableRow key={entry.id}>
+                          <TableCell className="font-medium">{entry.product_name}</TableCell>
+                          <TableCell className="text-right font-display font-semibold text-success">+{entry.quantity}</TableCell>
+                          <TableCell>
+                            {entry.image_url ? (
+                              <a href={entry.image_url} target="_blank" rel="noopener noreferrer">
+                                <img src={entry.image_url} alt="Entry" className="h-8 w-8 rounded object-cover" />
+                              </a>
+                            ) : "—"}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{new Date(entry.created_at).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {stockRemovals && stockRemovals.length > 0 && (
+            <Card className="rounded-2xl shadow-sm border-border/60">
+              <CardHeader>
+                <CardTitle className="font-display">Recent Stock Removals</CardTitle>
+                <CardDescription>Latest stock out records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-xl border border-border/60 overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableHead>Product</TableHead>
+                        <TableHead className="text-right">Qty</TableHead>
+                        <TableHead>Photo</TableHead>
+                        <TableHead>Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {stockRemovals.map(removal => (
+                        <TableRow key={removal.id}>
+                          <TableCell className="font-medium">{removal.product_name}</TableCell>
+                          <TableCell className="text-right font-display font-semibold text-destructive">-{removal.quantity}</TableCell>
+                          <TableCell>
+                            {removal.image_url ? (
+                              <a href={removal.image_url} target="_blank" rel="noopener noreferrer">
+                                <img src={removal.image_url} alt="Removal" className="h-8 w-8 rounded object-cover" />
+                              </a>
+                            ) : "—"}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{new Date(removal.created_at).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );
