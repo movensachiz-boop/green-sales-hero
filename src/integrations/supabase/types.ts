@@ -166,6 +166,7 @@ export type Database = {
           added_by: string
           created_at: string
           id: string
+          image_url: string | null
           notes: string | null
           product_name: string
           quantity: number
@@ -174,6 +175,7 @@ export type Database = {
           added_by: string
           created_at?: string
           id?: string
+          image_url?: string | null
           notes?: string | null
           product_name: string
           quantity: number
@@ -182,9 +184,40 @@ export type Database = {
           added_by?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           notes?: string | null
           product_name?: string
           quantity?: number
+        }
+        Relationships: []
+      }
+      stock_removals: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          product_name: string
+          quantity: number
+          reason: string | null
+          removed_by: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_name: string
+          quantity: number
+          reason?: string | null
+          removed_by: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_name?: string
+          quantity?: number
+          reason?: string | null
+          removed_by?: string
         }
         Relationships: []
       }
