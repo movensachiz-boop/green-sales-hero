@@ -69,6 +69,19 @@ const Auth = () => {
     }
   };
 
+  const handleGuestLogin = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInAnonymously();
+    setLoading(false);
+    if (error) {
+      toast({
+        title: "Guest login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -179,6 +192,21 @@ const Auth = () => {
               </form>
             </TabsContent>
           </Tabs>
+          
+          <div className="mt-4 pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleGuestLogin}
+              disabled={loading}
+            >
+              {loading ? "Entering..." : "Continue as Guest"}
+            </Button>
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              No account needed — explore with limited access
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
