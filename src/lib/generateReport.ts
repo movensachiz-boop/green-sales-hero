@@ -1,14 +1,6 @@
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import logoUrl from "@/assets/logo.png";
-
-// Extend jsPDF type for autotable
-declare module "jspdf" {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-    lastAutoTable: { finalY: number };
-  }
-}
 
 type ReportOptions = {
   title: string;
@@ -86,7 +78,7 @@ export const generateReport = async (options: ReportOptions) => {
       startY += 6;
     }
 
-    doc.autoTable({
+    autoTable(doc, {
       startY,
       head: [table.columns],
       body: table.rows,
@@ -107,7 +99,7 @@ export const generateReport = async (options: ReportOptions) => {
       margin: { left: 14, right: 14 },
     });
 
-    startY = doc.lastAutoTable.finalY + 12;
+    startY = (doc as any).lastAutoTable.finalY + 12;
   }
 
   // Footer
