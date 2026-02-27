@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, TrendingUp, TrendingDown, Package } from "lucide-react";
+import { generateReport } from "@/lib/generateReport";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,7 +104,37 @@ const Analytics = () => {
             <h1 className="text-3xl font-bold text-foreground">Sales Analytics</h1>
             <p className="text-muted-foreground">Comprehensive performance insights</p>
           </div>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onClick={() => {
+              const tables = [];
+              if (salesData?.length) {
+                const productSummary = salesData.reduce((acc, s) => {
+                  const ex = acc.find(p => p.product === s.product_name);
+                  if (ex) { ex.qty += s.quantity; ex.rev += Number(s.amount); }
+                  else acc.push({ product: s.product_name, qty: s.quantity, rev: Number(s.amount) });
+                  return acc;
+                }, [] as Array<{ product: string; qty: number; rev: number }>).sort((a, b) => b.qty - a.qty);
+                tables.push({
+                  heading: "Product Sales Summary",
+                  columns: ["Product", "Units Sold", "Revenue ($)"],
+                  rows: productSummary.map(p => [p.product, p.qty, p.rev.toFixed(2)]),
+                });
+              }
+              if (inventory?.length) {
+                tables.push({
+                  heading: "Inventory Snapshot",
+                  columns: ["Product", "Current Stock", "Min Level"],
+                  rows: inventory.map(i => [i.product_name, i.current_stock, i.min_stock_level]),
+                });
+              }
+              generateReport({
+                title: "Sales Analytics Report",
+                subtitle: `Performance overview — ${new Date().toLocaleDateString()}`,
+                tables,
+              });
+            }}
+          >
             <Download className="mr-2 h-4 w-4" />
             Export Report
           </Button>
