@@ -2,7 +2,8 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Package, AlertTriangle, TrendingUp, ArrowRight } from "lucide-react";
+import { MapPin, Package, AlertTriangle, TrendingUp, ArrowRight, Download } from "lucide-react";
+import { generateReport } from "@/lib/generateReport";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -83,9 +84,34 @@ const Cities = () => {
             <h1 className="text-3xl font-display font-bold text-foreground">City Performance</h1>
             <p className="text-muted-foreground mt-1">Stock levels & sales across Zimbabwe</p>
           </div>
-          <Button onClick={() => navigate("/dashboard/city-stock")} className="rounded-xl font-semibold gap-2">
-            <Package className="h-4 w-4" /> Distribute Stock <ArrowRight className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                generateReport({
+                  title: "City Performance Report",
+                  subtitle: `Stock & sales across Zimbabwe — ${new Date().toLocaleDateString()}`,
+                  tables: [{
+                    columns: ["City", "Products", "Total Stock", "Sales ($)", "Missing", "Low Stock", "Status"],
+                    rows: sortedCities.map(c => [
+                      c.city,
+                      `${c.productCount}/${allProducts.length}`,
+                      c.totalStock,
+                      c.totalSales.toFixed(0),
+                      c.missingProducts.length,
+                      c.lowStock.length,
+                      (c.missingProducts.length + c.outOfStock.length + c.lowStock.length) === 0 ? "OK" : "Needs Stock",
+                    ]),
+                  }],
+                });
+              }}
+            >
+              <Download className="mr-2 h-4 w-4" /> Export Report
+            </Button>
+            <Button onClick={() => navigate("/dashboard/city-stock")} className="rounded-xl font-semibold gap-2">
+              <Package className="h-4 w-4" /> Distribute Stock <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Overview cards */}

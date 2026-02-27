@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Package, AlertTriangle } from "lucide-react";
+import { Package, AlertTriangle, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { generateReport } from "@/lib/generateReport";
 import { AddStockForm } from "@/components/stock/AddStockForm";
 import { RemoveStockForm } from "@/components/stock/RemoveStockForm";
 
@@ -71,9 +73,50 @@ const Stock = () => {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-foreground">Stock Management</h1>
-          <p className="text-muted-foreground mt-1">Track and manage your inventory</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-foreground">Stock Management</h1>
+            <p className="text-muted-foreground mt-1">Track and manage your inventory</p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const tables = [];
+              if (inventory?.length) {
+                tables.push({
+                  heading: "Current Inventory",
+                  columns: ["Product", "Current Stock", "Min Level", "Status"],
+                  rows: inventory.map(i => [
+                    i.product_name,
+                    i.current_stock,
+                    i.min_stock_level,
+                    i.current_stock <= 0 ? "Out of Stock" : i.current_stock <= i.min_stock_level ? "Low" : "In Stock",
+                  ]),
+                });
+              }
+              if (stockEntries?.length) {
+                tables.push({
+                  heading: "Recent Stock Entries",
+                  columns: ["Product", "Quantity", "Date"],
+                  rows: stockEntries.map(e => [e.product_name, `+${e.quantity}`, new Date(e.created_at).toLocaleDateString()]),
+                });
+              }
+              if (stockRemovals?.length) {
+                tables.push({
+                  heading: "Recent Stock Removals",
+                  columns: ["Product", "Quantity", "Reason", "Date"],
+                  rows: stockRemovals.map(r => [r.product_name, `-${r.quantity}`, r.reason || "—", new Date(r.created_at).toLocaleDateString()]),
+                });
+              }
+              generateReport({
+                title: "Stock Report",
+                subtitle: `Generated on ${new Date().toLocaleDateString()} — Greenworld Inventory Overview`,
+                tables,
+              });
+            }}
+          >
+            <Download className="mr-2 h-4 w-4" /> Export Report
+          </Button>
         </div>
 
         {lowStockItems.length > 0 && (
